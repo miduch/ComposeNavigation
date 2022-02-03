@@ -7,7 +7,6 @@ import com.example.homescreen.destinations.HomeScreenLevel2Destination
 import com.example.onboarding.destinations.OnBoardingScreenDestination
 import com.example.settings.destinations.SettingsScreenDestination
 import com.example.settings.destinations.SettingsScreenLevel2Destination
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 
@@ -38,7 +37,7 @@ object AppNavGraphs {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavigation() {
     DestinationsNavHost(navGraph = AppNavGraphs.home)

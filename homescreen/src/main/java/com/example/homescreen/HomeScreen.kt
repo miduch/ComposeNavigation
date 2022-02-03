@@ -15,16 +15,14 @@ import androidx.compose.ui.unit.dp
 import com.example.homescreen.destinations.HomeScreenLevel2Destination
 import com.example.onboarding.destinations.OnBoardingScreenDestination
 import com.example.settings.destinations.SettingsScreenDestination
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @OptIn(
     ExperimentalAnimationApi::class,
-    ExperimentalMaterialNavigationApi::class,
     ExperimentalFoundationApi::class
 )
-@Destination(start = true)
+@Destination
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {
     Column(

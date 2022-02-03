@@ -12,16 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.settings.destinations.SettingsScreenLevel2Destination
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @OptIn(
     ExperimentalAnimationApi::class,
-    ExperimentalMaterialNavigationApi::class,
     ExperimentalFoundationApi::class
 )
-@Destination(start = true)
+@Destination
 @Composable
 fun SettingsScreen(navigator: DestinationsNavigator) {
     Column(
