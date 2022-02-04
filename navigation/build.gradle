@@ -45,6 +45,7 @@ ksp {
 }
 
 dependencies {
+    implementation project(":shared")
     implementation project(":onboarding")
     implementation project(":homescreen")
     implementation project(":settings")

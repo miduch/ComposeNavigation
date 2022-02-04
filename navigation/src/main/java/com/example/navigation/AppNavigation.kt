@@ -2,18 +2,25 @@ package com.example.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import com.example.homescreen.HomeScreen
 import com.example.homescreen.destinations.HomeScreenDestination
 import com.example.homescreen.destinations.HomeScreenLevel2Destination
+import com.example.onboarding.OnBoardingScreen
 import com.example.onboarding.destinations.OnBoardingScreenDestination
 import com.example.settings.destinations.SettingsScreenDestination
 import com.example.settings.destinations.SettingsScreenLevel2Destination
+import com.example.shared.FeaturesNavigator
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.manualcomposablecalls.DestinationScope
+import com.ramcosta.composedestinations.manualcomposablecalls.composable
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.spec.NavGraphSpec
 
 object AppNavGraphs {
     val onboarding = object : NavGraphSpec {
         override val route = "onboarding_route"
-        override val destinationsByRoute = listOf(OnBoardingScreenDestination).associateBy { it.route }
+        override val destinationsByRoute =
+            listOf(OnBoardingScreenDestination).associateBy { it.route }
         override val startRoute = OnBoardingScreenDestination
     }
 
@@ -37,8 +44,43 @@ object AppNavGraphs {
     }
 }
 
+class FeaturesNavigatorImpl(private val navigator: DestinationsNavigator): FeaturesNavigator {
+
+    override fun closeOnboarding() {
+        navigator.navigate(HomeScreenDestination) {
+            this.popUpTo(OnBoardingScreenDestination.route) {
+                inclusive = true
+            }
+        }
+    }
+
+    override fun openSettings() {
+        navigator.navigate(SettingsScreenDestination)
+    }
+}
+
+fun DestinationScope<*>.featuresNavigator() = FeaturesNavigatorImpl(destinationsNavigator)
+
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AppNavigation() {
-    DestinationsNavHost(navGraph = AppNavGraphs.home)
+    val showOnboarding = listOf(true, false).random()
+    DestinationsNavHost(
+        navGraph = AppNavGraphs.home,
+        startRoute = if (showOnboarding) AppNavGraphs.onboarding else AppNavGraphs.home.startRoute
+    ) {
+        composable(HomeScreenDestination) {
+            HomeScreen(
+                navigator = destinationsNavigator,
+                featuresNavigator = featuresNavigator()
+            )
+        }
+        composable(OnBoardingScreenDestination) {
+            OnBoardingScreen(
+                navigator = destinationsNavigator,
+                featuresNavigator = featuresNavigator()
+            )
+        }
+    }
 }

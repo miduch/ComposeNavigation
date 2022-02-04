@@ -5,12 +5,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.shared.FeaturesNavigator
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -20,11 +21,14 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 )
 @Destination
 @Composable
-fun OnBoardingScreen(navigator: DestinationsNavigator) {
+fun OnBoardingScreen(
+    navigator: DestinationsNavigator,
+    featuresNavigator: FeaturesNavigator,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background),
+            .background(Color.Yellow),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -32,7 +36,7 @@ fun OnBoardingScreen(navigator: DestinationsNavigator) {
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
         Button(
             onClick = {
-                navigator.popBackStack()
+                featuresNavigator.closeOnboarding()
             }
         ) {
             Text(text = "Done")

@@ -45,8 +45,7 @@ ksp {
 }
 
 dependencies {
-    implementation project(":onboarding")
-    implementation project(":settings")
+    implementation project(":shared")
 
     implementation 'io.github.raamcosta.compose-destinations:animations-core:1.2.1-beta'
     ksp 'io.github.raamcosta.compose-destinations:ksp:1.2.1-beta'
