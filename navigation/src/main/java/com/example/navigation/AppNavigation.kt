@@ -10,7 +10,11 @@ import com.example.onboarding.destinations.OnBoardingScreenDestination
 import com.example.settings.destinations.SettingsScreenDestination
 import com.example.settings.destinations.SettingsScreenLevel2Destination
 import com.example.shared.FeaturesNavigator
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
+import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import com.ramcosta.composedestinations.manualcomposablecalls.DestinationScope
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -62,12 +66,18 @@ class FeaturesNavigatorImpl(private val navigator: DestinationsNavigator): Featu
 fun DestinationScope<*>.featuresNavigator() = FeaturesNavigatorImpl(destinationsNavigator)
 
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
 @Composable
 fun AppNavigation() {
     val showOnboarding = listOf(true, false).random()
+    val engine = rememberAnimatedNavHostEngine(
+        rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING
+    )
+    val navController = rememberAnimatedNavController()
     DestinationsNavHost(
         navGraph = AppNavGraphs.home,
+        engine = engine,
+        navController = navController,
         startRoute = if (showOnboarding) AppNavGraphs.onboarding else AppNavGraphs.home.startRoute
     ) {
         composable(HomeScreenDestination) {
