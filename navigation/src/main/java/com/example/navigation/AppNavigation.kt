@@ -1,27 +1,20 @@
 package com.example.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
-import com.example.homescreen.HomeScreen
 import com.example.homescreen.destinations.HomeScreenDestination
 import com.example.homescreen.destinations.HomeScreenLevel2Destination
-import com.example.onboarding.OnBoardingScreen
 import com.example.onboarding.destinations.OnBoardingScreenDestination
 import com.example.settings.destinations.SettingsScreenDestination
 import com.example.settings.destinations.SettingsScreenLevel2Destination
@@ -31,9 +24,8 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
-import com.ramcosta.composedestinations.manualcomposablecalls.DestinationScope
-import com.ramcosta.composedestinations.manualcomposablecalls.composable
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.DependenciesContainerBuilder
+import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigateTo
 import com.ramcosta.composedestinations.spec.Direction
 import com.ramcosta.composedestinations.spec.NavGraphSpec
@@ -66,22 +58,16 @@ object AppNavGraphs {
     }
 }
 
-class FeaturesNavigatorImpl(private val navigator: DestinationsNavigator): FeaturesNavigator {
 
-    override fun closeOnboarding() {
-        navigator.navigate(HomeScreenDestination) {
-            this.popUpTo(OnBoardingScreenDestination.route) {
-                inclusive = true
-            }
-        }
-    }
-
-    override fun openSettings() {
-        navigator.navigate(SettingsScreenDestination)
+fun DependenciesContainerBuilder<*>.addDependencies(
+    featuresNavigator: FeaturesNavigator
+) {
+    when (destination) {
+        HomeScreenDestination -> dependency(featuresNavigator)
+        OnBoardingScreenDestination -> dependency(featuresNavigator)
+        SettingsScreenDestination -> dependency(featuresNavigator)
     }
 }
-
-fun DestinationScope<*>.featuresNavigator() = FeaturesNavigatorImpl(destinationsNavigator)
 
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
@@ -90,7 +76,10 @@ fun AppNavigation() {
     val showOnboarding = false//listOf(true, false).random()
     val navController = rememberAnimatedNavController()
     val engine = rememberAnimatedNavHostEngine(
-        rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING
+        rootDefaultAnimations = FADING,
+        defaultAnimationsForNestedNavGraph = mapOf(
+            AppNavGraphs.onboarding to SLIDE_IN_VERTICALLY
+        )
     )
 
     Scaffold (
@@ -112,21 +101,11 @@ fun AppNavigation() {
             navGraph = AppNavGraphs.home,
             engine = engine,
             navController = navController,
-            startRoute = if (showOnboarding) AppNavGraphs.onboarding else AppNavGraphs.home.startRoute
-        ) {
-            composable(HomeScreenDestination) {
-                HomeScreen(
-                    navigator = destinationsNavigator,
-                    featuresNavigator = featuresNavigator()
-                )
+            startRoute = if (showOnboarding) AppNavGraphs.onboarding else AppNavGraphs.home.startRoute,
+            dependenciesContainerBuilder = {
+                addDependencies(FeaturesNavigatorImpl(destinationsNavigator))
             }
-            composable(OnBoardingScreenDestination) {
-                OnBoardingScreen(
-                    navigator = destinationsNavigator,
-                    featuresNavigator = featuresNavigator()
-                )
-            }
-        }
+        )
     }
 }
 

@@ -37,6 +37,14 @@ fun HomeScreen(
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
         Button(
             onClick = {
+                featuresNavigator.launchOnboarding()
+            }
+        ) {
+            Text(text = "Onboarding")
+        }
+        Spacer(modifier = Modifier.padding(vertical = 12.dp))
+        Button(
+            onClick = {
                 navigator.navigate(HomeScreenLevel2Destination)
             }
         ) {
